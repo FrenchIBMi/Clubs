@@ -7,3 +7,4 @@ Bienvennue sur le projet FrenchIBMi/Clubs
   
 ## Ce projet contient actuellement
   - ce simple fichier readme
+  - la commande CHGOBJAPI permettant de modifier par API QLICOBJD, certains attributs d'un objet
