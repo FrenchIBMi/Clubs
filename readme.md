@@ -9,4 +9,4 @@ Bienvennue sur le projet FrenchIBMi/Clubs
   - ce simple fichier readme
   - la commande CHGOBJAPI permettant de modifier par API QLICOBJD, certains attributs d'un objet
   - la commande SU permettant de basculer QSECOFR dans une session 5250
-  - la commande SUDO permettant de lancer une commande en tant que QSECOFR
+  - la commande SUDO permettant de lancer une commande en tant que QSECOFR (voir http://www.volubis.fr/freeware/su.htm)
