@@ -1,0 +1,96 @@
+             PGM        PARM(&PGM &numero &rtnsrcf &rtnsrcl &rtnsrcm +
+                             &rtnnbr)
+             dcl &pgm      *char 20
+             dcl &numero   *dec  (3 0)
+             dcl &rtnsrcf  *char 10
+             dcl &rtnsrcl  *char 10
+             dcl &rtnsrcm  *char 10
+             dcl &rtnnbr   *dec  (3 0)
+             dcl &wrtnsrcf *char 10
+             dcl &wrtnsrcl *char 10
+             dcl &wrtnsrcm *char 10
+             dcl &wrtnnbr  *dec  (3 0)
+
+             DCL        &ERRORSW *LGL                     /* SWITCH  */
+             DCL        &MSGID *CHAR LEN(7)               /* ID MSG  */
+             DCL        &MSGDTA *CHAR LEN(100)            /* DATA    */
+             DCL        &MSGF *CHAR LEN(10)               /* FICHIER */
+             DCL        &MSGFLIB *CHAR LEN(10)            /* BIBLI   */
+
+              COPYRIGHT  TEXT(Volubis)
+             MONMSG     MSGID(CPF0000) EXEC(GOTO ERREUR)
+
+ /* CORPS DU PROGRAMME */
+
+             CHKOBJ     OBJ(%SST(&pgm 11 10)/%SST(&pgm 1 10)) +
+                          OBJTYPE(*pgm) AUT(*READ)
+             RTVOBJD    OBJ(%SST(&PGM 11 10)/%SST(&PGM 1 10)) +
+                          OBJTYPE(*PGM) SRCF(&WRTNSRCF) +
+                          SRCFLIB(&WRTNSRCL) SRCMBR(&WRTNSRCM)
+
+ /* OPM */   IF         COND(&WRTNSRCM *NE ' ') THEN(do)
+                          chgvar &wrtnnbr 1
+                          goto   PARAMETRES
+             ENDDO
+
+ /* ILE */
+
+      /* creation du user space pour RTVPGMSRCG*/
+
+             DLTUSRSPC  USRSPC(QTEMP/RTVPGMSRC)
+              MONMSG     MSGID(CPF0000) EXEC(RCVMSG RMV(*YES))
+             call quscrtus parm('RTVPGMSRC QTEMP'      +
+                                'RTVPGMSRC'            +
+                                x'000000FF'            +
+                                x'00'                  +
+                                '*USE'                 +
+                                'user space temporaire')
+
+  /* routine RPG-IV, retrouve les coordonnées source */
+             CALLPRC    PRC(RTVPGMSRCG) PARM(&PGM &numero +
+                                             &wrtnsrcf     +
+                                             &wrtnsrcl     +
+                                             &wrtnsrcm     +
+                                             &wrtnnbr      )
+
+parametres:
+             chgvar &rtnsrcf &wrtnsrcf
+               monmsg mch0000 exec(do)  /* parametre non envoyé */
+                   RCVMSG     MSGTYPE(*EXCP) /* sup du message */
+               enddo
+             chgvar &rtnsrcl &wrtnsrcl
+               monmsg mch0000 exec(do)
+                   RCVMSG     MSGTYPE(*EXCP)
+               enddo
+             chgvar &rtnsrcm &wrtnsrcm
+               monmsg mch0000 exec(do)
+                   RCVMSG     MSGTYPE(*EXCP)
+               enddo
+             chgvar &rtnnbr &wrtnnbr
+               monmsg mch0000 exec(do)  /* parametre non envoyé */
+                   RCVMSG     MSGTYPE(*EXCP)
+               enddo
+ return
+
+              /*----------------------------------------*/
+ ERREUR:      /*        GESTION DES ERREURS             */
+              /*----------------------------------------*/
+             IF         &ERRORSW SNDPGMMSG MSGID(CPF9899) +
+                          MSGF(QCPFMSG) MSGTYPE(*ESCAPE) /* 2EME FOIS*/
+                                                         /* ARRET PGM*/
+             CHGVAR     &ERRORSW '1' /* MISE EN PLACE DU SWITCH     */
+
+ /* RENVOI DES MESSAGES DE TYPE *DIAG SI FIN ANORMALE */
+ DIAGMSG:    RCVMSG     MSGTYPE(*DIAG) MSGDTA(&MSGDTA) MSGID(&MSGID) +
+                          MSGF(&MSGF) SNDMSGFLIB(&MSGFLIB)
+             IF         (&MSGID *EQ '       ') GOTO EXCPMSG
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*DIAG)
+             GOTO       DIAGMSG /* BOUCLE SUR MESSAGES *DIAG      */
+
+ /* RENVOI DU MESSAGE D'ERREUR                        */
+ EXCPMSG:    RCVMSG     MSGTYPE(*EXCP) MSGDTA(&MSGDTA) MSGID(&MSGID) +
+                          MSGF(&MSGF) SNDMSGFLIB(&MSGFLIB)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             ENDPGM                                
