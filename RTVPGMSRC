@@ -1,0 +1,26 @@
+ /*****************************************************************/
+ /*   retrouve source d'un pgm, même ILE                          */
+ /*                                                               */
+ /* COMPILER : CRTCMD ...                                         */
+ /*                   ALLOW(*BPGM *IPGM *BMOD *IMOD)              */
+ /*                                                               */
+ /*****************************************************************/
+
+             CMD        PROMPT('retrouve source d''un pgm ILE')
+             PARM       KWD(PGM) TYPE(Q1) MIN(1) PROMPT('Programme')
+ Q1:         QUAL       TYPE(*NAME) MIN(1) EXPR(*YES)
+             QUAL       TYPE(*NAME) EXPR(*YES) PROMPT('Bibliothèque')
+             PARM       KWD(NUMERO) TYPE(*DEC) LEN(3 0) DFT(*FIRST) +
+                          SPCVAL((*FIRST 1)) PROMPT('Source du +
+                          module N°')
+             PARM       KWD(RTNSRCF) TYPE(*CHAR) LEN(10) +
+                          RTNVAL(*YES) PROMPT('variable pour +
+                          Fichier (10c)')
+             PARM       KWD(RTNSRCL) TYPE(*CHAR) LEN(10) +
+                          RTNVAL(*YES) PROMPT('variable pour +
+                          RTNSRCL (10c)')
+             PARM       KWD(RTNSRCM) TYPE(*CHAR) LEN(10) +
+                          RTNVAL(*YES) PROMPT('variable pour +
+                          Membre (10c)')
+             PARM       KWD(RTNNBR) TYPE(*DEC) LEN(3 0) RTNVAL(*YES) +
+                          PROMPT('variable pour nb/modules (3 0)')                         
