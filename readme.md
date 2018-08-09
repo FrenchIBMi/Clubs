@@ -8,6 +8,6 @@ Bienvennue sur le projet FrenchIBMi/Clubs
 ## Ce projet contient actuellement
   - ce simple fichier readme
   - la commande CHGOBJAPI permettant de modifier par API QLICOBJD, certains attributs d'un objet
-  - la commande RTVPGMSRC qui retourve les coordonnées source d'un pgm même ILE (1 ou plusieurs modules)
+  - la commande RTVPGMSRC qui retrouve les coordonnées source d'un pgm, même ILE (1 ou plusieurs modules)
   - la commande SU permettant de basculer QSECOFR dans une session 5250
   - la commande SUDO permettant de lancer une commande en tant que QSECOFR (voir aussi http://www.volubis.fr/freeware/su.htm)
