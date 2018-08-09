@@ -1,0 +1,12 @@
+             PGM
+             DCL &BIB     *CHAR 10 VALUE(XXXXXXXXXX)
+             CRTCLMOD   MODULE(QTEMP/RTVPGMSRCC) +
+                          SRCFILE(AF4SRCT/PDMOPTIONS)
+             CRTRPGMOD  MODULE(QTEMP/RTVPGMSRCG) +
+                          SRCFILE(AF4SRCT/PDMOPTIONS)
+             CRTPGM     PGM(&BIB/RTVPGMSRC) MODULE(QTEMP/RTVPGMSRCC +
+                          QTEMP/RTVPGMSRCG)
+             CRTCMD     CMD(&BIB/RTVPGMSRC) PGM(&BIB/RTVPGMSRC) +
+                          SRCFILE(AF4SRCT/PDMOPTIONS) ALLOW(*IPGM +
+                          *BPGM *IMOD *BMOD)
+             ENDPGM                               
